@@ -1,3 +1,5 @@
+// https://thedevelopercafe.com/articles/singleton-in-golang-839d8610958b
+
 package cache
 
 import "sync"
@@ -25,16 +27,12 @@ func (c myCache) Set(key string, value string) {
 
 // GetCache function to always return the _same_ instance of myCache
 var cache *myCache
-var once sync.Once // defining a new `sync.Once`
 
 
 func GetCache() MyCache {
 	once.Do(func() {
 		cache = &myCache{}
 	})
-
-	return *cache
-}
 
 
 
