@@ -1,5 +1,7 @@
 package cache
 
+import "sync"
+
 // Interface our cache needs to fullfill
 type MyCache interface {
 	Get(key string) string
@@ -23,21 +25,16 @@ func (c myCache) Set(key string, value string) {
 
 // GetCache function to always return the _same_ instance of myCache
 var cache *myCache
+var once sync.Once // defining a new `sync.Once`
 
-// Use a mutex to act as a lock
-var mutex sync.mutex
 
 func GetCache() MyCache {
-	if cache == nil {
-		mutex.Lock() // mutex inside the if-block, less expensive
-		defer mutex.Unlock()
-
-		// An additional check, so even if multiple goroutines obtain
-		// a lock, only one can initalize the cache
-		if cache == nil {
-			cache = &myCache{}
-	    }
-    }
+	once.Do(func() {
+		cache = &myCache{}
+	})
 
 	return *cache
 }
+
+
+
