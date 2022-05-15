@@ -32,8 +32,12 @@ func GetCache() MyCache {
 		mutex.Lock() // mutex inside the if-block, less expensive
 		defer mutex.Unlock()
 
-		cache = &myCache{}
-	}
+		// An additional check, so even if multiple goroutines obtain
+		// a lock, only one can initalize the cache
+		if cache == nil {
+			cache = &myCache{}
+	    }
+    }
 
 	return *cache
 }
