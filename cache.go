@@ -28,10 +28,10 @@ var cache *myCache
 var mutex sync.mutex
 
 func GetCache() MyCache {
-	mutex.Lock() // goroutines will wait here
-	defer mutex.Unlock()
-
 	if cache == nil {
+		mutex.Lock() // mutex inside the if-block, less expensive
+		defer mutex.Unlock()
+
 		cache = &myCache{}
 	}
 
