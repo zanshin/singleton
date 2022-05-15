@@ -24,7 +24,13 @@ func (c myCache) Set(key string, value string) {
 // GetCache function to always return the _same_ instance of myCache
 var cache *myCache
 
+// Use a mutex to act as a lock
+var mutex sync.mutex
+
 func GetCache() MyCache {
+	mutex.Lock() // goroutines will wait here
+	defer mutex.Unlock()
+
 	if cache == nil {
 		cache = &myCache{}
 	}
